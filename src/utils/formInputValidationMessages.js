@@ -1,0 +1,6 @@
+export const inputUsername = "Please input your username !"
+export const invalidUsername = "Userame must have at least one value [except for space] !"
+export const inputTitle = "Please input task title !"
+export const invalidTitle = "Title must have at least three value [except for space] !"
+export const inputContent = "Please input your content !"
+export const invalidContent = "Content must have at least three value [except for space] !"
