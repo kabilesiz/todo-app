@@ -16,7 +16,6 @@ function UpdateTodo({items, updateItem}) {
     const [currentTodo, setCurrentTodo] = useState({})
     useEffect(() => {
         setCurrentTodo(getTodoByIdFromState(params.id))
-        console.log(currentTodo)
         if (currentTodo !== null || currentTodo !== undefined)
             setFormValues()
     }, [currentTodo])

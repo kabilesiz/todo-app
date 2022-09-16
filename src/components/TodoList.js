@@ -6,8 +6,10 @@ import {deleteItem, getItems} from "../slices/item-slice";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {Link} from "react-router-dom";
 import {deletingFailed, loadTaskFailed, statisticsTitle, successfullyDeleted} from "../utils/popupMessages";
+import {createdDate, pageSize} from "../utils/commonConfigurations";
 
 function TodoList({getItems, deleteItem}) {
+    const [sort, setSort] = useState('descend');
     const [isStatisticOpen, setIsStatisticOpen] = useState(false);
     const [loading, setLoading] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
@@ -29,7 +31,7 @@ function TodoList({getItems, deleteItem}) {
             .then(() => {
                 message.success(successfullyDeleted)
                     .then(() => {
-                        handlePaginationRequest(currentPage, 10, null)
+                        handlePaginationRequest(currentPage)
                         setLoading(false)
                     })
             })
@@ -42,21 +44,19 @@ function TodoList({getItems, deleteItem}) {
         const doneTask = itemsInfo.items.filter(x => x.isCompleted === true)
         return doneTask.length / itemsInfo.items.length * 100;
     }
-    const onChange = (pagination, filters, sorter, extra) => {
-        console.log('params', pagination, filters, sorter, extra);
-        /*if (sorter.order !== undefined && sorter.order === 'ascend') {
-            const sortParams = `sortBy=${sorter.field}&order=asc`
-            handlePaginationRequest(1, 10, sortParams);
-        } else {
-            handlePaginationRequest(1, 10, null);
-        }*/
 
-
-    };
-    const handlePaginationRequest = (page, pageSize, sortParams) => {
+    const prepareByPageAndSort = (page) => {
+        const baseSearch = `?sortBy=${createdDate}&page=${page}&limit=${pageSize}`
+        if (sort === 'ascend'){
+            return baseSearch + `&order=asc`
+        }
+        return baseSearch + `&order=desc`
+    }
+    const handlePaginationRequest = (page) => {
+        console.log("girdi")
         setLoading(true)
         setCurrentPage(page)
-        getItems({page, pageSize, sortParams})
+        getItems({sortParams:prepareByPageAndSort(page)})
             .then(unwrapResult)
             .then(res => {
                 setItemsInfo(res)
@@ -64,7 +64,7 @@ function TodoList({getItems, deleteItem}) {
             })
             .catch(() => {
                 message.error(loadTaskFailed)
-                setLoading(false)
+                    .then(() => setLoading(false))
             })
     }
     const columns = [
@@ -91,10 +91,13 @@ function TodoList({getItems, deleteItem}) {
         {
             title: 'Created Date',
             dataIndex: 'createdDate',
-            defaultSortOrder: 'descend',
             render: val => (new Date(val).toLocaleDateString() + " " + new Date(val).toLocaleTimeString()),
             align: 'center',
-            sorter: val => val
+            sorter: val => val,
+            sortOrder: sort,
+            onHeaderCell: () => ({
+                onClick: () => setSort(sort === 'ascend' ? 'descend' : 'ascend'),
+            }),
         },
         {
             title: 'Updated Date',
@@ -117,21 +120,27 @@ function TodoList({getItems, deleteItem}) {
                         okText="Yes"
                         cancelText="No"
                     >
-                        <DeleteOutlined style={{marginRight: "10px",color: '#08c'}}/>
+                        <DeleteOutlined style={{marginRight: "10px", color: '#08c'}}/>
                     </Popconfirm>
                 </>
             ),
         }
     ];
     useEffect(() => {
-        handlePaginationRequest(currentPage, 10, null);
-    }, [])
+        handlePaginationRequest(currentPage);
+    }, [sort])
     return (
         <div style={{position: 'relative'}}>
             {
                 loading ?
                     <>
-                        <Spin size={"large"} style={{height:`${window.innerHeight}px`, width:`${window.innerWidth}`, display:"flex", alignItems:'center', justifyContent:'center'}}></Spin>
+                        <Spin size={"large"} style={{
+                            height: `${window.innerHeight}px`,
+                            width: `${window.innerWidth}`,
+                            display: "flex",
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}></Spin>
                     </>
                     :
                     <div>
@@ -142,8 +151,9 @@ function TodoList({getItems, deleteItem}) {
                             marginRight: '3%',
                             marginTop: '1%'
                         }}>
-                            <PieChartOutlined style={{fontSize: '20px', color: '#08c', marginBottom: '1%', marginRight: '.3%'}}
-                                              onClick={showStatistics}></PieChartOutlined>
+                            <PieChartOutlined
+                                style={{fontSize: '20px', color: '#08c', marginBottom: '1%', marginRight: '.3%'}}
+                                onClick={showStatistics}></PieChartOutlined>
                             <p style={{color: '#08c'}}>Statistics</p>
                         </div>
                         <Modal closable={false} centered title={statisticsTitle}
@@ -159,7 +169,6 @@ function TodoList({getItems, deleteItem}) {
                             }
                         </Modal>
                         <Table
-                            onChange={onChange}
                             pagination={false}
                             rowKey={obj => obj.id}
                             columns={columns}
@@ -178,13 +187,18 @@ function TodoList({getItems, deleteItem}) {
                                 rowExpandable: (record) => record.hasContent,
                             }}
                         />
-                        <div style={{display: "flex", alignItems: "center", justifyContent: 'flex-end', marginTop: '10px'}}>
+                        <div style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: 'flex-end',
+                            marginTop: '10px'
+                        }}>
                             <Pagination
-                                defaultCurrent={1}
+                                defaultCurrent={currentPage}
                                 pageSize={10}
                                 total={itemsInfo.count}
                                 showSizeChanger={false}
-                                onChange={(page, pageSize) => handlePaginationRequest(page, pageSize)}
+                                onChange={(page, pageSize) => handlePaginationRequest(page)}
                             />
                         </div>
                         {itemsInfo.items ? <h1>Total Count : {itemsInfo.count}</h1> : null}
@@ -194,5 +208,4 @@ function TodoList({getItems, deleteItem}) {
         </div>
     );
 }
-
 export default connect(null, {getItems, deleteItem})(TodoList)

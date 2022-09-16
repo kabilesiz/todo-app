@@ -1,11 +1,7 @@
 import api from "../http-config"
 class ItemService{
-    getItems(page,pageSize,sortParams){
-        const baseSearch = `/todos?page=${page}&limit=${pageSize}`;
-        const defaultOrder =`sortBy=createdDate&order=desc`
-        if (sortParams !== undefined && sortParams !== null)
-            return api.get(`${baseSearch}&${sortParams}`)
-        return api.get(`${baseSearch}&${defaultOrder}`)
+    getItems(sortParams){
+        return api.get(`/todos${sortParams}`)
     }
     createItem(payload){
         return api.post(`/todos`, payload)
