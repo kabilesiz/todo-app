@@ -200,7 +200,7 @@ function TodoList({getItems, deleteItem}) {
                                 onChange={(page) => handlePaginationRequest(page)}
                             />
                         </div>
-                        {itemsInfo.items ? <h1 style={{display:"flex",justifyContent:"center", marginTop:'2%'}}>The total count of tasks : {itemsInfo.count}</h1> : null}
+                        {itemsInfo.items ? <h1 style={{display:"flex",justifyContent:"center"}}>The total count of tasks : {itemsInfo.count}</h1> : null}
                     </div>
             }
 
