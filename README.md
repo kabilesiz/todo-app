@@ -34,7 +34,7 @@ npm start
 | ------ | ------ |
 | Creating Tasks | you need to enter at least 3 value for title and content stage |
 | Updating Tasks | you need to enter at least 3 value for title and content stage |
-| Login | [you need to enter at least 1 value for username stage |
+| Login | you need to enter at least 1 value for username stage |
 
 `Note : The statistics of success rate are related to current page and not for all tasks`
 
