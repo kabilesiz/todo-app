@@ -1,6 +1,5 @@
 # Popup Smart Case
 
-## Features
 
 The web application is an exampla of todo list.
 
