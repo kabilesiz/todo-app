@@ -6,7 +6,7 @@ import {deleteItem, getItems} from "../slices/item-slice";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {Link} from "react-router-dom";
 import {deletingFailed, loadTaskFailed, statisticsTitle, successfullyDeleted} from "../utils/popupMessages";
-import {createdDate, pageSize} from "../utils/commonConfigurations";
+import {createdDate, pageSize, warningDeleteTask} from "../utils/commonConfigurations";
 
 function TodoList({getItems, deleteItem}) {
     const [sort, setSort] = useState('descend');
@@ -53,7 +53,6 @@ function TodoList({getItems, deleteItem}) {
         return baseSearch + `&order=desc`
     }
     const handlePaginationRequest = (page) => {
-        console.log("girdi")
         setLoading(true)
         setCurrentPage(page)
         getItems({sortParams:prepareByPageAndSort(page)})
@@ -115,7 +114,7 @@ function TodoList({getItems, deleteItem}) {
                         <EditOutlined style={{marginRight: "10px"}}/>
                     </Link>
                     <Popconfirm
-                        title="Are you sure delete the item ?"
+                        title= {warningDeleteTask}
                         onConfirm={() => handleDeleteItem(record)}
                         okText="Yes"
                         cancelText="No"
@@ -198,10 +197,10 @@ function TodoList({getItems, deleteItem}) {
                                 pageSize={10}
                                 total={itemsInfo.count}
                                 showSizeChanger={false}
-                                onChange={(page, pageSize) => handlePaginationRequest(page)}
+                                onChange={(page) => handlePaginationRequest(page)}
                             />
                         </div>
-                        {itemsInfo.items ? <h1>Total Count : {itemsInfo.count}</h1> : null}
+                        {itemsInfo.items ? <h1 style={{display:"flex",justifyContent:"center", marginTop:'2%'}}>The total count of tasks : {itemsInfo.count}</h1> : null}
                     </div>
             }
 

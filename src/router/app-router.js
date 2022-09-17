@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {BrowserRouter} from "react-router-dom";
 import {Route, Routes} from "react-router";
 import UpdateTodo from "../components/UpdateTodo";
@@ -11,8 +11,9 @@ import Navbar from "../navbar/Navbar";
 import CreateTodo from "../components/CreateTodo";
 import Theme from "../components/Theme";
 
-function AppRouter(props) {
-    const [isLightMode, setIsLightMode] = useState(localStorage.getItem("mode") === 'light' ? true : false);
+function AppRouter() {
+    const [isLightMode, setIsLightMode] = useState(localStorage.getItem("mode") === null ? false :
+        localStorage.getItem("mode") === 'light');
     const updateAppComponent = () => {
         setIsLightMode(!isLightMode);
     }
@@ -22,6 +23,7 @@ function AppRouter(props) {
             {isLightMode ? document.body.classList.add('white-content') : document.body.classList.remove('white-content')}
             <BrowserRouter>
                 <Navbar></Navbar>
+                <Theme updateAppComponent={updateAppComponent}></Theme>
                 <Routes>
                     <Route
                         path="/login"
@@ -48,7 +50,6 @@ function AppRouter(props) {
                         element={<NotAuthenticated></NotAuthenticated>}>
                     </Route>
                 </Routes>
-                <Theme updateAppComponent={updateAppComponent}></Theme>
             </BrowserRouter>
         </div>
     );

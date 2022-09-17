@@ -28,7 +28,6 @@ function Login({login}) {
         <div>
             <h1 style={{textAlign: 'center', marginTop: '10%'}}>LOGIN FORM</h1>
             <Form
-                // style={{display:"flex",alignItems:"center",justifyContent:'center',height:`${window.innerHeight}px`, width:`${window.innerWidth}`}}
                 style={formStyle}
                 name="basic"
                 labelCol={{

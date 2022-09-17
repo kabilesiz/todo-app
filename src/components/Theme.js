@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {Space, Switch} from "antd";
-import getDataOrAriaProps from "antd/es/_util/getDataOrAriaProps";
 
 function Theme(props) {
     const { updateAppComponent } = props;
-    const [isLightMode, setIsLightMode] = useState(localStorage.getItem("mode") === 'light' ? true : false);
+    const [isLightMode, setIsLightMode] = useState(
+        localStorage.getItem("mode") === null ? false :
+            localStorage.getItem("mode") === 'light');
     const changeTheme = () => {
         setIsLightMode(!isLightMode)
     }
@@ -14,9 +15,9 @@ function Theme(props) {
         updateAppComponent()
     },[isLightMode])
     return (
-        <div>
+        <div style={{display:"flex", justifyContent: "flex-end"}}>
             <Space align="center" style={{ marginBottom: 16 }}>
-                <Switch checked={isLightMode} onChange={changeTheme} />
+                Dark | Light  <Switch checked={isLightMode} onChange={changeTheme} />
             </Space>
         </div>
     );
